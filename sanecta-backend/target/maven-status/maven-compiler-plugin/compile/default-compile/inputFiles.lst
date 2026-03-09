@@ -1,0 +1,5 @@
+/home/gabriel/workspace/sanecta/src/main/java/com/web/sanecta/SanectaApplication.java
+/home/gabriel/workspace/sanecta/src/main/java/com/web/sanecta/backend/controller/UserController.java
+/home/gabriel/workspace/sanecta/src/main/java/com/web/sanecta/backend/model/User.java
+/home/gabriel/workspace/sanecta/src/main/java/com/web/sanecta/backend/repository/UserRepository.java
+/home/gabriel/workspace/sanecta/src/main/java/com/web/sanecta/backend/service/UserService.java
