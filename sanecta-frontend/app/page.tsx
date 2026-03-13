@@ -127,8 +127,12 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    toast.info('Conectando com Google...', {
-      description: 'Aguarde enquanto redirecionamos você.',
+    toast.loading('Conectando com Google...', {
+      description: (
+        <span className="text-black/50 font-semibold">
+          Aguarde enquanto redirecionamos você.
+        </span>
+      ),
     });
   };
 
