@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Sun, Moon } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -64,7 +65,7 @@ function GoogleIcon({ className }: { className?: string }) {
 function SanectaLogo() {
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-b from-sky-100 to-sky-50 shadow-sm">
+      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-b from-primary/20 to-primary/10 shadow-sm">
         <svg
           viewBox="0 0 64 64"
           className="h-12 w-12"
@@ -104,13 +105,13 @@ function SanectaLogo() {
               y2="60"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stopColor="#38BDF8" />
-              <stop offset="1" stopColor="#0284C7" />
+              <stop stopColor="oklch(0.7 0.15 180)" />
+              <stop offset="1" stopColor="oklch(0.55 0.18 200)" />
             </linearGradient>
           </defs>
         </svg>
       </div>
-      <span className="text-xl font-semibold text-sky-500">Sanecta</span>
+      <span className="text-xl font-semibold text-primary">Sanecta</span>
     </div>
   );
 }
@@ -118,6 +119,7 @@ function SanectaLogo() {
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { theme, setTheme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,8 +131,8 @@ export default function LoginPage() {
   const handleGoogleLogin = () => {
     toast.loading('Conectando com Google...', {
       description: (
-        <span className="text-black/50 font-semibold">
-          Aguarde enquanto redirecionamos você.
+        <span className="text-muted-foreground font-semibold">
+          Aguarde enquanto redirecionamos voce.
         </span>
       ),
     });
@@ -138,21 +140,35 @@ export default function LoginPage() {
 
   return (
     <TooltipProvider>
-      <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4 font-sans">
-        <Card className="w-full max-w-md border-0 shadow-lg">
-          <CardHeader className="flex flex-col items-center gap-4 pb-2 pt-8">
+      <div className="flex min-h-screen items-center justify-center bg-background p-4 font-sans">
+        {/* Botao de Troca de Tema */}
+        <div className="fixed top-4 right-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="rounded-full"
+          >
+            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Alternar tema</span>
+          </Button>
+        </div>
+
+        <Card className="w-full max-w-md border-0 shadow-lg mx-4 sm:mx-0">
+          <CardHeader className="flex flex-col items-center gap-3 sm:gap-4 pb-2 pt-6 sm:pt-8 px-4 sm:px-6">
             <SanectaLogo />
             <div className="flex flex-col items-center gap-1 text-center">
-              <CardTitle className="text-2xl font-bold tracking-tight">
-                Welcome to Sanecta
+              <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                Bem-vindo ao Sanecta
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                Sign in to continue
+                Faca login para continuar
               </CardDescription>
             </div>
           </CardHeader>
 
-          <CardContent className="px-8">
+          <CardContent className="px-4 sm:px-8">
             <form onSubmit={handleSubmit}>
               <FieldGroup>
                 <Tooltip>
@@ -164,23 +180,23 @@ export default function LoginPage() {
                       onClick={handleGoogleLogin}
                     >
                       <GoogleIcon className="h-5 w-5" />
-                      Continue with Google
+                      Continuar com Google
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Quick login with your Google account</p>
+                    <p>Login rapido com sua conta Google</p>
                   </TooltipContent>
                 </Tooltip>
 
                 <div className="flex items-center w-full">
                   <FieldSeparator className="flex-1 h-px" />
-                  <span className="px-2 text-sm text-muted-foreground">OR</span>
+                  <span className="px-2 text-sm text-muted-foreground">OU</span>
                   <FieldSeparator className="flex-1 h-px" />
                 </div>
 
                 <Field>
                   <FieldLabel className="text-center text-sm font-medium">
-                    Email
+                    E-mail
                   </FieldLabel>
                   <InputGroup>
                     <InputGroupAddon align="inline-start">
@@ -188,7 +204,7 @@ export default function LoginPage() {
                     </InputGroupAddon>
                     <InputGroupInput
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder="voce@exemplo.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -198,7 +214,7 @@ export default function LoginPage() {
 
                 <Field>
                   <FieldLabel className="text-center text-sm font-medium">
-                    Password
+                    Senha
                   </FieldLabel>
                   <InputGroup>
                     <InputGroupAddon align="inline-start">
@@ -216,28 +232,28 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="h-11 w-full bg-slate-900 text-base font-medium text-slate-50 hover:bg-slate-800"
+                  className="h-11 w-full bg-primary text-base font-medium text-primary-foreground hover:bg-primary/90"
                 >
-                  Sign in
+                  Entrar
                 </Button>
               </FieldGroup>
             </form>
           </CardContent>
 
-          <Separator className="mx-8" />
+          <Separator className="mx-4 sm:mx-8" />
 
-          <CardFooter className="flex items-center justify-between px-8 py-4">
-            <Button variant="link" className="h-auto p-0 text-sky-600" asChild>
-              <Link href="/forgot-password">Forgot password?</Link>
+          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 px-4 sm:px-8 py-4">
+            <Button variant="link" className="h-auto p-0 text-primary" asChild>
+              <Link href="/forgot-password">Esqueceu a senha?</Link>
             </Button>
             <div className="text-sm text-muted-foreground">
-              Need an account?{' '}
+              Precisa de uma conta?{' '}
               <Button
                 variant="link"
                 className="h-auto p-0 font-semibold text-foreground"
                 asChild
               >
-                <Link href="/signup">Sign up</Link>
+                <Link href="/cadastro">Cadastre-se</Link>
               </Button>
             </div>
           </CardFooter>
