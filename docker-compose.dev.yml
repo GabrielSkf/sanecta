@@ -1,0 +1,18 @@
+services:
+  frontend:
+    container_name: sanecta-frontend
+    build:
+      context: ./sanecta-frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./sanecta-frontend:/app    # bind mount para hot reload
+      - /app/node_modules          # mantém node_modules isolado no container
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    command: npm run dev
+    restart: unless-stopped

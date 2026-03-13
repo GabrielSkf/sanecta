@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend - Projeto
 
-## Getting Started
+Este repositório contém o frontend do projeto desenvolvido em **Next.js**.
 
-First, run the development server:
+## Pré-requisitos
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Node.js (>= 18)
+* npm ou yarn
+* Docker e Docker Compose
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Instalação e Execução
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Instalar dependências do frontend**
 
-## Learn More
+   Entre na pasta do frontend e instale as dependências:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cd sanecta-frontend
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Subir o ambiente com Docker Compose**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   Volte para a raiz do projeto e execute o Docker Compose no modo de desenvolvimento:
 
-## Deploy on Vercel
+   ```bash
+   cd ..
+   docker compose -f docker-compose.dev.yml up --build
+   ```
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Observações
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Este README considera que o frontend está na pasta `sanecta-frontend`.
+* Qualquer alteração no Docker File deve ser refletida no `sanecta-frontend/Dockerfile.dev`.
+* Qualquer alteração no Docker Compose deve ser refletida no `docker-compose.dev.yml`.
+* Mantenha o Node.js atualizado para evitar incompatibilidade

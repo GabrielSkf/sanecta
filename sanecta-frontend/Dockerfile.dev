@@ -1,0 +1,26 @@
+# Usa Node 20 Debian completo para evitar problemas com LightningCSS
+FROM node:20-bullseye
+
+# Diretório de trabalho
+WORKDIR /app
+
+# Copia package.json e package-lock.json primeiro (cache do npm)
+COPY package*.json ./
+
+# Instala dependências
+RUN npm install
+
+# Copia o restante do código
+COPY . .
+
+# Expondo porta do Next.js
+EXPOSE 3000
+
+# Variáveis de ambiente para dev
+ENV NODE_ENV=development
+ENV CHOKIDAR_USEPOLLING=true
+ENV WATCHPACK_POLLING=true
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Comando para rodar o dev server com Turbopack
+CMD ["npm", "run", "dev"]
