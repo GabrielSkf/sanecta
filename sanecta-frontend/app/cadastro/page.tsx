@@ -2,23 +2,44 @@
 
 import { ArrowLeft, FileText, Sun, Moon } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+import { createUser } from "@/app/services/userService"
 
 export default function CadastroAutarquia() {
   const { theme, setTheme } = useTheme()
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage('')
+
+    try {
+      await createUser({
+        username: nome,
+        email: email,
+        password: senha,
+      })
+
+      setMessage('Usuário criado com sucesso!')
+      setNome('')
+      setEmail('')
+      setSenha('')
+    } catch (error) {
+      setMessage('Erro: ' + (error instanceof Error ? error.message : String(error)))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background py-4 sm:py-6 px-3 sm:px-4">
@@ -65,116 +86,9 @@ export default function CadastroAutarquia() {
         </div>
 
         <CardContent className="p-4 sm:p-6">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Secao: Dados da Instituicao */}
-            <div className="space-y-4">
-              <h2 className="text-base sm:text-lg font-semibold text-foreground">
-                Dados da Instituicao
-              </h2>
 
-              {/* Nome da Autarquia */}
-              <div className="space-y-2">
-                <Label htmlFor="nome-autarquia">
-                  Nome da Autarquia <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="nome-autarquia"
-                  placeholder="Ex: SAAE Sao Paulo"
-                />
-              </div>
-
-              {/* CNPJ e Porte */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="cnpj">
-                    CNPJ <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="cnpj"
-                    placeholder="00.000.000/0000-00"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="porte">
-                    Porte da Autarquia <span className="text-destructive">*</span>
-                  </Label>
-                  <Select>
-                    <SelectTrigger id="porte">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pequeno">Pequeno</SelectItem>
-                      <SelectItem value="medio">Medio</SelectItem>
-                      <SelectItem value="grande">Grande</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Cidade e Estado */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="cidade">
-                    Cidade <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="cidade"
-                    placeholder="Sao Paulo"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="estado">
-                    Estado <span className="text-destructive">*</span>
-                  </Label>
-                  <Select>
-                    <SelectTrigger id="estado">
-                      <SelectValue placeholder="UF" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="AC">AC</SelectItem>
-                      <SelectItem value="AL">AL</SelectItem>
-                      <SelectItem value="AP">AP</SelectItem>
-                      <SelectItem value="AM">AM</SelectItem>
-                      <SelectItem value="BA">BA</SelectItem>
-                      <SelectItem value="CE">CE</SelectItem>
-                      <SelectItem value="DF">DF</SelectItem>
-                      <SelectItem value="ES">ES</SelectItem>
-                      <SelectItem value="GO">GO</SelectItem>
-                      <SelectItem value="MA">MA</SelectItem>
-                      <SelectItem value="MT">MT</SelectItem>
-                      <SelectItem value="MS">MS</SelectItem>
-                      <SelectItem value="MG">MG</SelectItem>
-                      <SelectItem value="PA">PA</SelectItem>
-                      <SelectItem value="PB">PB</SelectItem>
-                      <SelectItem value="PR">PR</SelectItem>
-                      <SelectItem value="PE">PE</SelectItem>
-                      <SelectItem value="PI">PI</SelectItem>
-                      <SelectItem value="RJ">RJ</SelectItem>
-                      <SelectItem value="RN">RN</SelectItem>
-                      <SelectItem value="RS">RS</SelectItem>
-                      <SelectItem value="RO">RO</SelectItem>
-                      <SelectItem value="RR">RR</SelectItem>
-                      <SelectItem value="SC">SC</SelectItem>
-                      <SelectItem value="SP">SP</SelectItem>
-                      <SelectItem value="SE">SE</SelectItem>
-                      <SelectItem value="TO">TO</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Descricao */}
-              <div className="space-y-2">
-                <Label htmlFor="descricao">Descricao</Label>
-                <Textarea
-                  id="descricao"
-                  placeholder="Descreva brevemente sua instituicao..."
-                  className="min-h-[100px] resize-y"
-                />
-              </div>
-            </div>
-
-            <Separator />
 
             {/* Secao: Responsavel pelo Cadastro */}
             <div className="space-y-4">
@@ -182,7 +96,7 @@ export default function CadastroAutarquia() {
                 Responsavel pelo Cadastro
               </h2>
 
-              {/* Nome Completo e Cargo */}
+              {/* Nome Completo e Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nome-completo">
@@ -190,42 +104,40 @@ export default function CadastroAutarquia() {
                   </Label>
                   <Input
                     id="nome-completo"
-                    placeholder="Joao Silva"
+                    placeholder="João Silva"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cargo">
-                    Cargo <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="cargo"
-                    placeholder="Ex: Diretor Administrativo"
-                  />
-                </div>
-              </div>
-
-              {/* E-mail e Telefone */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">
-                    E-mail <span className="text-destructive">*</span>
+                    Email <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="contato@autarquia.gov.br"
+                    placeholder="contato@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="telefone">
-                    Telefone <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="telefone"
-                    type="tel"
-                    placeholder="(11) 99999-9999"
-                  />
-                </div>
+              </div>
+
+              {/* Senha */}
+              <div className="space-y-2">
+                <Label htmlFor="senha">
+                  Senha <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="senha"
+                  type="password"
+                  placeholder="Digite sua senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                />
               </div>
             </div>
 
@@ -234,8 +146,15 @@ export default function CadastroAutarquia() {
               type="submit"
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-base"
             >
-              Criar Conta
+              {loading ? 'Criando Conta...' : 'Criar Conta'}
             </Button>
+
+            {/* Mensagem de feedback */}
+            {message && (
+              <p className={`text-center text-sm ${message.includes('sucesso') ? 'text-green-600' : 'text-red-600'}`}>
+                {message}
+              </p>
+            )}
 
             {/* Texto de rodape */}
             <p className="text-center text-sm text-muted-foreground">
