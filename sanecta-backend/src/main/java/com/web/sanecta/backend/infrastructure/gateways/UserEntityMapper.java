@@ -6,10 +6,10 @@ import com.web.sanecta.backend.infrastructure.persistence.UserEntity;
 public class UserEntityMapper {
     UserEntity toEntity(User userDomainObject){
         return new UserEntity(userDomainObject.username(),
-                userDomainObject.password(), userDomainObject.email());
+                userDomainObject.email(), userDomainObject.password());
     }
 
     User toDomainObject(UserEntity userEntity){
-        return new User(userEntity.getUsername(),  userEntity.getPassword(), userEntity.getEmail());
+        return new User(userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword());
     }
 }

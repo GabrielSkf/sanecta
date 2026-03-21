@@ -1,11 +1,12 @@
 package com.web.sanecta.backend.config;
 
+import com.web.sanecta.backend.application.usecases.CreateUserInteractor;
+import com.web.sanecta.backend.application.usecases.ListUsersInteractor;
+import com.web.sanecta.backend.application.usecases.AuthenticateUserInteractor;
+import com.web.sanecta.backend.application.gateways.UserGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.web.sanecta.backend.application.gateways.UserGateway;
-import com.web.sanecta.backend.application.usecases.CreateUserInteractor;
-import com.web.sanecta.backend.infrastructure.controllers.UserDTOMapper;
+import com.web.sanecta.backend.infrastructure.controllers.users.UserDTOMapper;
 import com.web.sanecta.backend.infrastructure.gateways.UserEntityMapper;
 import com.web.sanecta.backend.infrastructure.gateways.UserRepositoryGateway;
 import com.web.sanecta.backend.infrastructure.persistence.UserRepository;
@@ -15,6 +16,16 @@ public class UserConfig {
     @Bean
     CreateUserInteractor createUserCase(UserGateway userGateway) {
         return new CreateUserInteractor(userGateway);
+    }
+
+    @Bean
+    ListUsersInteractor listUsersCase(UserGateway userGateway) {
+        return new ListUsersInteractor(userGateway);
+    }
+
+    @Bean
+    AuthenticateUserInteractor authenticateUserCase(UserGateway userGateway) {
+        return new AuthenticateUserInteractor(userGateway);
     }
 
     @Bean

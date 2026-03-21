@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, Sun, Moon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
+import { authenticate, setAuthToken } from '@/app/services/authService';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -33,6 +35,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+
+interface User {
+  username: string;
+  email: string;
+}
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -117,15 +124,32 @@ function SanectaLogo() {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [users, setUsers] = useState<User[]>([]);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Login realizado com sucesso!', {
-      description: 'Redirecionando para o dashboard...',
-    });
+    setLoading(true);
+
+    try {
+      const user = await authenticate({ email, password });
+      setAuthToken(user);
+      toast.success('Login realizado com sucesso!', {
+        description: 'Redirecionando para o dashboard...',
+      });
+      router.push('/dashboard');
+    } catch (error) {
+      toast.error('Erro no login', {
+        description: error instanceof Error ? error.message : 'Credenciais inválidas',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -136,6 +160,24 @@ export default function LoginPage() {
         </span>
       ),
     });
+  };
+
+  const handleGetUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/users', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data);
+        setMessage('Usuários carregados com sucesso!');
+      } else {
+        setMessage('Erro ao carregar usuários.');
+      }
+    } catch (error) {
+      setMessage('Erro: ' + (error instanceof Error ? error.message : String(error)));
+    }
   };
 
   return (
@@ -154,6 +196,27 @@ export default function LoginPage() {
             <span className="sr-only">Alternar tema</span>
           </Button>
         </div>
+
+        {/* Botão para GET Users */}
+        <div className="fixed top-4 left-4">
+          <Button onClick={handleGetUsers} variant="outline">
+            GET
+          </Button>
+        </div>
+
+        {/* Mensagem e Lista de Usuários */}
+        {message && (
+          <div className="fixed top-16 left-4 bg-white dark:bg-gray-800 p-4 rounded shadow max-w-sm">
+            <p>{message}</p>
+            {users.length > 0 && (
+              <ul className="mt-2">
+                {users.map((user: User, index: number) => (
+                  <li key={index} className="text-sm">{user.username} - {user.email}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <Card className="w-full max-w-md border-0 shadow-lg mx-4 sm:mx-0">
           <CardHeader className="flex flex-col items-center gap-3 sm:gap-4 pb-2 pt-6 sm:pt-8 px-4 sm:px-6">
@@ -233,8 +296,9 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   className="h-11 w-full bg-primary text-base font-medium text-primary-foreground hover:bg-primary/90"
+                  disabled={loading}
                 >
-                  Entrar
+                  {loading ? 'Entrando...' : 'Entrar'}
                 </Button>
               </FieldGroup>
             </form>

@@ -1,5 +1,21 @@
 # Getting Started
 
+## Execução local (backend fora do Docker)
+
+1. Suba apenas o banco de dados:
+
+```bash
+docker compose up -d postgres
+```
+
+2. Rode o backend localmente:
+
+```bash
+./mvnw spring-boot:run
+```
+
+As configurações padrão já apontam para `localhost:5432` com usuário/senha `sanecta`.
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 
@@ -24,4 +40,3 @@ Due to Maven's design, elements are inherited from the parent POM to the project
 While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
 To prevent this, the project POM contains empty overrides for these elements.
 If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
-

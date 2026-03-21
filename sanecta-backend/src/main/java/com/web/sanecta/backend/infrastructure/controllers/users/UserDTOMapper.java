@@ -1,4 +1,4 @@
-package com.web.sanecta.backend.infrastructure.controllers;
+package com.web.sanecta.backend.infrastructure.controllers.users;
 
 import com.web.sanecta.backend.domain.entity.User;
 
@@ -8,6 +8,6 @@ public class UserDTOMapper {
     }
 
     public User toUser(CreateUserRequest request){
-        return new User(request.username(), request.password(),  request.email());
+        return new User(request.username(), request.email(), request.password());
     }
 }
