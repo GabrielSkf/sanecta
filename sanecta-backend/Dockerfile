@@ -1,22 +1,20 @@
-# syntax=docker/dockerfile:1
-
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+FROM maven:3.9.11-eclipse-temurin-21 AS build
 WORKDIR /app
 
-COPY pom.xml ./
-COPY src ./src
+COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
+RUN chmod +x mvnw
+RUN ./mvnw -q -DskipTests dependency:go-offline
 
-RUN mvn -q -DskipTests package \
-  && APP_JAR="$(ls -1 target/*.jar | grep -v -E '(\\.original\\.jar|original-)' | head -n 1)" \
-  && test -n "$APP_JAR" \
-  && cp "$APP_JAR" /app/app.jar
+COPY src src
+RUN ./mvnw -q -DskipTests package
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-COPY --from=build /app/app.jar /app/app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
-ENV SPRING_PROFILES_ACTIVE=docker
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
