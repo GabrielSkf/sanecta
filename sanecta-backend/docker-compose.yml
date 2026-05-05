@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: sanecta-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: sanecta
       POSTGRES_USER: sanecta
@@ -15,6 +16,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  app:
+    build:
+      context: .
+    container_name: sanecta-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sanecta
+      SPRING_DATASOURCE_USERNAME: sanecta
+      SPRING_DATASOURCE_PASSWORD: sanecta
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_data:
