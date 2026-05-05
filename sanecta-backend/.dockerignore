@@ -5,3 +5,6 @@ target
 data
 *.iml
 *.log
+.codex
+HELP.md
+README.md
